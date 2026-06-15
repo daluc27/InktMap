@@ -1,16 +1,7 @@
 
  /*
-  Yarın Yapacaklarımız:
-JDialog Kullanımı: Sadece veri girişi için açılıp kapanan "yavru" bir pencere oluşturacağız.
 
-Temiz Arayüz: Ana ekranda sadece arama çubuğu ve butonlar kalacak.
-
-Veri Aktarımı: İkinci pencerede yazdığın lokasyonu ana Map'e nasıl geri göndereceğimizi öğreneceğiz.
-
-Dinlenmene bak, zihnini boşalt. Yarın uyandığında bu karmaşık gelen yerlerin çok daha mantıklı gelmeye başladığını göreceksin.
-
-İyi akşamlar, yarın görüşürüz!
-
+This is currently a project focused solely on syntax.
  */
 
 
