@@ -1,0 +1,2 @@
+I work as a printing press operator and decided to transition into software engineering. This September, I’ll be starting my HBO-ICT studies at Saxion in Deventer.
+To prepare for my studies, I wanted to solve a real problem at my current job. In our ink room, finding where specific inks are stored on the shelves was a chaotic process with no tracking. I built this Java app to serve as a digital map: you type in the ink code, and it instantly gives you the exact shelf location.
