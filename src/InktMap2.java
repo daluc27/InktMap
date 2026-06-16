@@ -13,15 +13,26 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.io.IOException;
+import java.util.Locale;
+import java.util.ResourceBundle;
+import java.text.MessageFormat;
+
+
 
 
 
 public class InktMap2 {
 
+    private static ResourceBundle messages;
+    private static Locale huidigeLocale;
+
+
     public static void main(String[] args) {
 
         HashMap<String, String> inkten = new HashMap<>();
         Scanner scanner = new Scanner(System.in);
+
+        setLanguage("nl");
 
         ladenUitBestand(inkten);
 
@@ -33,17 +44,22 @@ public class InktMap2 {
             if (keuze1.equals("1")) {
                 inktZoeken(inkten,scanner);
 
-            }
-            else if (keuze1.equals("2")) {
-                 inktInvoeren(inkten,scanner);
-            }
-            else if (keuze1.equals("3")) {
+            } else if (keuze1.equals("2")) {
+
+                inktInvoeren(inkten,scanner);
+
+            } else if (keuze1.equals("3")) {
+
+                taalWisselen();
+
+            } else if (keuze1.equals("4")) {
+
                 opslaanInBestand(inkten);
-                System.out.println("Het programma afgesloten.");
+                System.out.println(messages.getString("program.closed"));
                 break;
-            }
-            else {
-                System.out.println("Ongeldige keuze");
+
+            } else {
+                System.out.println(messages.getString("invalid.choice"));
             }
 
 
@@ -55,11 +71,29 @@ public class InktMap2 {
                         //KEUZE MENU
 
     public static void keuzeMenu(){
-        System.out.println("------SCHUT INKTMAP------");
-        System.out.println("1. Inkt zoeken");
-        System.out.println("2. Inkt toevoegen");
-        System.out.println("3.Afsluiten");
-        System.out.print("Keuze?: ");
+        System.out.println(messages.getString("menu.title"));
+        System.out.println(messages.getString("menu.search"));
+        System.out.println(messages.getString("menu.add"));
+        System.out.println(messages.getString("menu.language"));
+        System.out.println(messages.getString("menu.exit"));
+        System.out.print(messages.getString("menu.choice"));
+
+    }
+
+    public static void taalWisselen(){
+
+        if (huidigeLocale.getLanguage().equals("nl"))
+            setLanguage("en");
+        else {
+            setLanguage("nl");
+        }
+
+    }
+
+    public static void setLanguage(String langCode){
+
+        huidigeLocale = new Locale(langCode);
+        messages = ResourceBundle.getBundle("messages", huidigeLocale);
 
     }
 
@@ -68,7 +102,7 @@ public class InktMap2 {
     public static void inktZoeken(HashMap<String, String> inkten, Scanner scanner){
 
 
-        System.out.print("Voer inkt nummer of naam in: ");
+        System.out.print(messages.getString("search.prompt"));
 
         String inktnummer = scanner.nextLine().trim();
 
@@ -79,7 +113,7 @@ public class InktMap2 {
             System.out.println(locatie);
 
         } else {
-            System.out.println("Inkt niet gevonden");
+            System.out.println(messages.getString("search.notfound"));
 
         }
 
@@ -89,34 +123,43 @@ public class InktMap2 {
     //INKTINVOEREN
 
     public static void inktInvoeren(HashMap<String, String> inkten, Scanner scanner){
-        System.out.print("Voer inkt nummer of naam in: ");
+        System.out.print(messages.getString("add.prompt"));
 
         String newInkt = scanner.nextLine().trim();
 
         if (inkten.containsKey(newInkt)) {
-            System.out.println("Let op!. Deze inkt bestaat al op " + inkten.get(newInkt));
-            System.out.print("Wilt u de locatie wijzigen? (J/N) : ");
+            String alertMsg = MessageFormat.format(messages.getString("add.exists"),inkten.get(newInkt));
+
+            System.out.println(alertMsg);
+            System.out.print(messages.getString("add.change"));
 
             String keuze2 = scanner.nextLine();
 
-            if (keuze2.equalsIgnoreCase("j")) {
+            if (keuze2.equalsIgnoreCase("j") || keuze2.equalsIgnoreCase("y")) {
 
-                System.out.print("Voer de NIEUW locatie in: ");
+                System.out.print(messages.getString("add.newlocation"));
                 String newLocatie = scanner.nextLine().toUpperCase();
 
-                System.out.println(newInkt + " is toegevoegd aan ---------> " + newLocatie);
+                String SuccessMsg = MessageFormat.format(messages.getString("add.success"), newInkt, newLocatie);
+
+                System.out.println(SuccessMsg);
+
+                inkten.put(newInkt,newLocatie);
 
             }
             else {
-                System.out.println("Wijziging geannuleerd.");
+                System.out.println(messages.getString("add.cancelled"));
             }
         }
         else {
 
-            System.out.print("Voer locatie for " + newInkt + " in: ");
+            String locationMsg = MessageFormat.format(messages.getString("add.locationprompt"), newInkt);
+            System.out.print(locationMsg);
             String newLocatie = scanner.nextLine().toUpperCase();
 
-            System.out.println(newInkt + " is toegevoegd aan ---------> " + newLocatie);
+            String SuccessMsg = MessageFormat.format(messages.getString("add.success"), newInkt, newLocatie);
+            System.out.println(SuccessMsg);
+            inkten.put(newInkt, newLocatie);
 
         }
 
@@ -141,17 +184,18 @@ public class InktMap2 {
                 if (apart.length >= 2) {
                     inkten.put(apart[0].trim(), apart[1].trim());
                 } else {
-                    System.out.println("verkeerde lijn overgeslagen " + lijn);
+                    String errorMsg1 = MessageFormat.format(messages.getString("file.skip"), lijn);
+                    System.out.println(errorMsg1);
                 }
             }
 
 
             bestandScanner.close();
-            System.out.println("Het bestand is succesvol geupload.");
+            System.out.println(messages.getString("file.loaded"));
         }
 
             catch(FileNotFoundException e) {
-                System.out.println("Het bestand in not gevonden.");
+                System.out.println(messages.getString("file.notfound"));
 
 
             }
@@ -172,11 +216,12 @@ public class InktMap2 {
             }
 
             writer.close();
-            System.out.println("De wijzigingen zijn opgeslagen. ");
+            System.out.println(messages.getString("file.saved"));
         }
 
         catch (IOException e){
-            System.out.println("Fout bij het bestand: " + e.getMessage());
+            String errorMsg2 = MessageFormat.format(messages.getString("file.error"), e.getMessage());
+            System.out.println(errorMsg2);
         }
 
 
